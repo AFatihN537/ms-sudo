@@ -2,33 +2,20 @@ name: PR Build & Test
 
 on:
   workflow_dispatch:
-  pull_request:
-  push:
-    paths-ignore:
-      - '.github/ISSUE_TEMPLATE/**'
-    branches:
-      - main
 
 jobs:
   check:
     runs-on: windows-2022
-
-    strategy:
-      matrix:
-          # Apparently ARM targets aren't usable in GH actions
-          # target: [x86_64-pc-windows-msvc, i686-pc-windows-msvc, aarch64-pc-windows-msvc]
-          target: [x86_64-pc-windows-msvc, i686-pc-windows-msvc]
-          branding: [Inbox, Stable, Dev]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Update toolchain
-        run: rustup update --no-self-update stable && rustup default stable-${{ matrix.target }}
+        run: rustup update --no-self-update stable && rustup default stable-x86_64-pc-windows-msvc
 
       - name: Add toolchain target
-        run: rustup target add ${{ matrix.target }}
+        run: rustup target add x86_64-pc-windows-msvc
 
       - name: Install fmt
         run: rustup component add rustfmt
